@@ -1,0 +1,27 @@
+#- op: replace
+#  path: /spec/replicas
+#  value: 3
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: doesnt-matter
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+        - name: hello-server
+          args:
+            # this will replace the args value, as it does not have merge key, to add use patch
+            - -Dconfig.file=/config/pigs.conf
+
+
+#patches:
+#  - patch: |-
+#      - op: add
+#        path: /spec/template/spec/containers/0/args/-
+#        value: --argument-2=efg
+#    target:
+#      kind: Deployment
+

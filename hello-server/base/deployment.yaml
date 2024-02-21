@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-server
+  labels:
+    app: hello-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-server
+  template:
+    metadata:
+      labels:
+        app: hello-server
+    spec:
+      containers:
+        - name: hello-server
+          image: hello-server:123
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: hello-server-config-map
+              mountPath: "/config"
+              readOnly: true
+            - name: secret
+              mountPath: "/secrets/secret.yaml"
+              subPath: "secret.yaml"
+              readOnly: true
+            - name: another-secret
+              mountPath: "/secrets/another-secret.yaml"
+              subPath: "another-secret.yaml"
+              readOnly: true
+      volumes:
+        - name: hello-server-config-map
+          configMap:
+            name: hello-server-config-map
+        - name: secret
+          secret:
+            secretName: secret
+        - name: another-secret
+          secret:
+            secretName: another-secret
